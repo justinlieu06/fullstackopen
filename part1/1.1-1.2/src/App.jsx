@@ -44,6 +44,7 @@ const App = () => {
     ['State of a component', 14]
   ]
 
+  // Original data set up
   // const part1 = 'Fundamentals of React'
   // const exercises1 = 10
   // const part2 = 'Using props to pass data'
