@@ -12,7 +12,7 @@ const Statistics = (props) => {
   console.log(props);
   const feedbackGiven = (props.good || props.neutral || props.bad);
   console.log(feedbackGiven);
-  const defaultMessage = "No feedback given";
+  const defaultMessage = "Error: No feedback given";
   return (
     <div>
       <h3>Statistics:</h3>
@@ -77,19 +77,19 @@ const App = () => {
         {anecdotes[selected]}
       </div>
       <div>
-        <Button onClick={()=>setSelected(Math.floor(Math.random()*anecdotes.length))} text="Random Anecdote"></Button>
+        <Button onClick={()=>setSelected(Math.floor(Math.random()*anecdotes.length))} text="New Random Anecdote"></Button>
         <Button onClick={handleClickLike} text="Like"></Button>
       </div>
       <div>
         Likes: {likes[selected]}
       </div>
 
-      <h3>Anecdote with most votes</h3>
+      <h3>Anecdote with most votes:</h3>
       <div>
         {anecdotes[maxLikeIdx]}
       </div>
 
-      <h3>Give Feedback of this App: </h3>
+      <h3>Give Feedback on this SPA: </h3>
       <div>
         <Button onClick={()=>setGood(good+1)} text="Good" />
         <Button onClick={()=>setNeutral(neutral+1)} text="Neutral" />
