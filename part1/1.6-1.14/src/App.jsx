@@ -8,14 +8,15 @@ const StatisticLine = ({text, value}) => {
   )
 }
 
+// component that calculates statistics on the feedback given
 const Statistics = (props) => {
-  console.log(props);
+  // console.log(props);
   const feedbackGiven = (props.good || props.neutral || props.bad);
-  console.log(feedbackGiven);
+  // console.log(feedbackGiven);
   const defaultMessage = "Error: No feedback given";
   return (
     <div>
-      <h3>Statistics:</h3>
+      <h3>Application Statistics:</h3>
       {feedbackGiven ? <table>
         <tbody>
         {/* <tr><th>Count</th><th>Value</th></tr> */}
