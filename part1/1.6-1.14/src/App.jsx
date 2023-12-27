@@ -56,7 +56,7 @@ const App = () => {
   const [maxLikeIdx, setMaxLikeIdx] = useState(0);
 
   console.log('maxLikeIdx: '+maxLikeIdx);
-
+  
   const handleClickLike = () => {
     console.log('handle click like');
     const copy = [...likes];
