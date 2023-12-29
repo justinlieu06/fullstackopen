@@ -1,5 +1,8 @@
 import { useState } from 'react'
 import Person from "./components/Person"
+import PersonForm from "./components/PersonForm"
+import Filter from "./components/Filter"
+import Directory from "./components/Directory"
 
 const App = () => {
   const [persons, setPersons] = useState([
@@ -13,7 +16,6 @@ const App = () => {
   const [newFilter, setNewFilter] = useState('')
 
   const submitPerson = (event) => {
-    console.log('submit person');
     event.preventDefault();
 
     const personObject = {
@@ -53,34 +55,28 @@ const App = () => {
     // return <Person name="bob" number="123" />;
   }
 
+  const getAllPersons = () => {
+    return persons.map(person => {
+      return <Person key={person.name} name={person.name} number={person.number} />
+    })
+  }
+
   return (
     <div>
       <h1>Phonebook</h1>
 
-      <h2>Submit New Entry:</h2>
-      <form onSubmit={submitPerson}>
-        <div>
-          name: <input value={newName} onChange={handleNameChange} />
-        </div>
-        <div>
-          number: <input value={newNumber} onChange={handleNumberChange} />
-        </div>
-        <div>
-          <button type="submit">add</button>
-        </div>
-      </form>
+      <PersonForm submitPerson={submitPerson} newName={newName} newNumber={newNumber} handleNameChange={handleNameChange} handleNumberChange={handleNumberChange} />
 
-      <h2>Filter Directory (By Name)</h2>
-      <div>
-        name: <input value={newFilter} onChange={handleFilterChange} />
-      </div>
+      <Filter newFilter={newFilter} handleFilterChange={handleFilterChange} />
 
-      <h2>Directory:</h2>
+      {/* <h2>Directory:</h2>
       <ul>
         {newFilter.length ? getFiltered() : persons.map(person => {
           return <Person key={person.name} name={person.name} number={person.number} />
         })}
-      </ul>
+      </ul> */}
+
+      <Directory newFilter={newFilter} getFiltered={getFiltered} getAllPersons={getAllPersons} />
     </div>
   )
 }
