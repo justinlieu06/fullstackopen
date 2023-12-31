@@ -1,3 +1,4 @@
+// lists persons in phonebook--if not filter, then simply list all
 const Directory = ({newFilter, getFiltered, getAllPersons}) => {
     return (
         <>

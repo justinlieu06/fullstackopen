@@ -1,3 +1,4 @@
+// form to submit new person (with name and number)
 const PersonForm = ({submitPerson, newName, handleNameChange, newNumber, handleNumberChange}) => {
     return (
         <>

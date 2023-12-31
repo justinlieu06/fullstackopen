@@ -1,3 +1,4 @@
+// input to change the filter state
 const Filter = ({newFilter, handleFilterChange}) => {
     return (
         <>
