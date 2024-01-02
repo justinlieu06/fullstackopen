@@ -5,6 +5,7 @@ import Filter from "./components/Filter"
 import Directory from "./components/Directory"
 
 const App = () => {
+  // fetch initial state of persons from server w/ axios library
   const [persons, setPersons] = useState([
     { name: 'Arto Hellas', number: '040-123456', id: 1 },
     { name: 'Ada Lovelace', number: '39-44-5323523', id: 2 },
