@@ -9,7 +9,8 @@ import Directory from "./components/Directory"
 const App = () => {
   // fetch initial state of persons from server w/ axios library
   const [persons, setPersons] = useState([]);
-  useEffect(()=>{
+
+  const hook = ()=> {
     console.log('effect');
     axios
       .get('http://localhost:3001/persons')
@@ -17,8 +18,8 @@ const App = () => {
         console.log('promise fulfileed');
         setPersons(response.data);
       }, [])
-  })
-  console.log('render', persons.length, 'persons');
+  }
+  useEffect(hook, []);
 
   // const [persons, setPersons] = useState([
   //   { name: 'Arto Hellas', number: '040-123456', id: 1 },
