@@ -44,8 +44,15 @@ const App = () => {
       return;
     }
 
-    setPersons(persons.concat(personObject));
-    setNewName('');
+    // alter to modify our server data db.json
+    axios
+      .post('http://localhost:3001/persons', personObject)
+      .then(response => {
+        setPersons(persons.concat(personObject));
+        // reset form input fields
+        setNewName('');
+        setNewNumber('');
+      })
   }
   
   const handleNameChange = (event) => {
