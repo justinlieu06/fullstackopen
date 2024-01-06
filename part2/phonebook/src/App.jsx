@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import axios from 'axios'
+import personService from './services/persons'
 
 import Person from "./components/Person"
 import PersonForm from "./components/PersonForm"
@@ -12,10 +12,9 @@ const App = () => {
 
   const hook = ()=> {
     console.log('effect');
-    axios
-      .get('http://localhost:3001/persons')
+    personService
+      .getAll()
       .then(response=> {
-        console.log('promise fulfileed');
         setPersons(response.data);
       }, [])
   }
@@ -45,8 +44,8 @@ const App = () => {
     }
 
     // alter to modify our server data db.json
-    axios
-      .post('http://localhost:3001/persons', personObject)
+    personService
+      .create(personObject)
       .then(response => {
         setPersons(persons.concat(personObject));
         // reset form input fields
