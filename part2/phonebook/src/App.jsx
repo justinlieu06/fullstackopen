@@ -14,8 +14,8 @@ const App = () => {
     console.log('effect');
     personService
       .getAll()
-      .then(response=> {
-        setPersons(response.data);
+      .then(initialPersons=> {
+        setPersons(initialPersons);
       }, [])
   }
   useEffect(hook, []);
@@ -46,8 +46,8 @@ const App = () => {
     // alter to modify our server data db.json
     personService
       .create(personObject)
-      .then(response => {
-        setPersons(persons.concat(personObject));
+      .then(returnedPerson => {
+        setPersons(persons.concat(returnedPerson));
         // reset form input fields
         setNewName('');
         setNewNumber('');
