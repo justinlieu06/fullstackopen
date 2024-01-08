@@ -62,7 +62,18 @@ const App = () => {
     setNewNumber(event.target.value);
   }
 
-  
+  // delete person with specified id
+  const deletePerson = (personId, personName) => {
+    if (confirm(`Delete contact for ${personName}?`)) {
+      console.log(`deleting person with id of ${personId}`);
+      personService
+      .deletePerson(personId)
+      .then(returnedPerson => {
+        console.log(returnedPerson);
+        setPersons(persons.filter(person=>person.id!==personId))
+      })
+    }
+  }
 
   const handleFilterChange = (event) => {
     setNewFilter(event.target.value);
@@ -74,14 +85,14 @@ const App = () => {
     let matches = persons.filter((person)=>newFilter.length<= person.name.length && person.name.slice(0,newFilter.length).toLowerCase()===newFilter.toLowerCase());
 
     return matches.map(person => {
-      return <Person key={person.name} name={person.name} number={person.number} />
+      return <Person key={person.name} name={person.name} number={person.number} personId={person.id} deletePerson={deletePerson} />
     })
     // return <Person name="bob" number="123" />;
   }
 
   const getAllPersons = () => {
     return persons.map(person => {
-      return <Person key={person.name} name={person.name} number={person.number} id={person.id} />
+      return <Person key={person.name} name={person.name} number={person.number} personId={person.id} deletePerson={deletePerson} />
     })
   }
 
