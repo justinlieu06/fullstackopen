@@ -37,9 +37,23 @@ const App = () => {
       name: newName,
       number: newNumber
     }
+    // should never be more than 1
+    let dupePersons = persons.filter((person)=>person.name===newName);
     // prevent same name from being added
-    if (persons.filter((person)=>person.name===newName).length){
-      alert(`${newName} is already added to phonebook`);
+    if (dupePersons.length){
+      let dupeId = dupePersons[0].id;
+      // alert(`${newName} is already added to phonebook`);
+      if (confirm(`${newName} is already added to the phonebook, replace the old number with a new one?`)) {
+        personService
+          .update(dupeId, personObject)
+          .then(returnedPerson => {
+            console.log(returnedPerson);
+            setPersons(persons.map(person=> person.id !== dupeId ? person : returnedPerson));
+            // reset form input fields
+            setNewName('');
+            setNewNumber('');
+          })
+      }
       return;
     }
 
