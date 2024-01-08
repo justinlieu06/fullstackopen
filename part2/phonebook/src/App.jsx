@@ -62,6 +62,8 @@ const App = () => {
     setNewNumber(event.target.value);
   }
 
+  
+
   const handleFilterChange = (event) => {
     setNewFilter(event.target.value);
   }
@@ -79,7 +81,7 @@ const App = () => {
 
   const getAllPersons = () => {
     return persons.map(person => {
-      return <Person key={person.name} name={person.name} number={person.number} />
+      return <Person key={person.name} name={person.name} number={person.number} id={person.id} />
     })
   }
 
