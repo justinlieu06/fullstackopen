@@ -3,6 +3,7 @@ import personService from './services/persons'
 import './index.css'
 
 import Notification from "./components/Notification"
+import Error from "./components/Error"
 import Person from "./components/Person"
 import PersonForm from "./components/PersonForm"
 import Filter from "./components/Filter"
@@ -32,6 +33,7 @@ const App = () => {
   const [newNumber, setNewNumber] = useState('')
   const [newFilter, setNewFilter] = useState('')
   const [notificationMessage, setNotificationMessage] = useState(null)
+  const [errorMessage, setErrorMessage] = useState(null)
 
   const submitPerson = (event) => {
     event.preventDefault();
@@ -60,6 +62,12 @@ const App = () => {
             // reset form input fields
             setNewName('');
             setNewNumber('');
+          })
+          .catch(error=>{
+            setErrorMessage(`Error: Information of ${newName} has already been removed from server. Try refreshing the page.`);
+            setTimeout(() => {
+              setErrorMessage(null)
+            }, 4000);
           })
       }
       return;
@@ -127,6 +135,7 @@ const App = () => {
     <div>
       <h1>Phonebook</h1>
       <Notification message={notificationMessage} />
+      <Error message={errorMessage} />
 
       <PersonForm submitPerson={submitPerson} newName={newName} newNumber={newNumber} handleNameChange={handleNameChange} handleNumberChange={handleNumberChange} />
 
