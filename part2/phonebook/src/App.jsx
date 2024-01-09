@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react'
 import personService from './services/persons'
+import './index.css'
 
+import Notification from "./components/Notification"
 import Person from "./components/Person"
 import PersonForm from "./components/PersonForm"
 import Filter from "./components/Filter"
@@ -29,6 +31,7 @@ const App = () => {
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [newFilter, setNewFilter] = useState('')
+  const [notificationMessage, setNotificationMessage] = useState(null)
 
   const submitPerson = (event) => {
     event.preventDefault();
@@ -49,6 +52,11 @@ const App = () => {
           .then(returnedPerson => {
             console.log(returnedPerson);
             setPersons(persons.map(person=> person.id !== dupeId ? person : returnedPerson));
+            // notify upon successful submission
+            setNotificationMessage(`${newName}'s info has been updated`);
+            setTimeout(() => {
+              setNotificationMessage(null)
+            }, 4000);
             // reset form input fields
             setNewName('');
             setNewNumber('');
@@ -62,6 +70,11 @@ const App = () => {
       .create(personObject)
       .then(returnedPerson => {
         setPersons(persons.concat(returnedPerson));
+        // notify upon successful submission
+        setNotificationMessage(`${newName}'s info has been added`);
+            setTimeout(() => {
+              setNotificationMessage(null)
+            }, 4000);
         // reset form input fields
         setNewName('');
         setNewNumber('');
@@ -113,6 +126,7 @@ const App = () => {
   return (
     <div>
       <h1>Phonebook</h1>
+      <Notification message={notificationMessage} />
 
       <PersonForm submitPerson={submitPerson} newName={newName} newNumber={newNumber} handleNameChange={handleNameChange} handleNumberChange={handleNumberChange} />
 
