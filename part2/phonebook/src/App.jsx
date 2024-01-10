@@ -1,9 +1,7 @@
 import { useState, useEffect } from 'react'
 import personService from './services/persons'
-import './index.css'
 
 import Notification from "./components/Notification"
-import Error from "./components/Error"
 import Person from "./components/Person"
 import PersonForm from "./components/PersonForm"
 import Filter from "./components/Filter"
@@ -14,7 +12,6 @@ const App = () => {
   const [persons, setPersons] = useState([]);
 
   const hook = ()=> {
-    console.log('effect');
     personService
       .getAll()
       .then(initialPersons=> {
@@ -26,35 +23,36 @@ const App = () => {
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [newFilter, setNewFilter] = useState('')
-  const [notificationMessage, setNotificationMessage] = useState(null)
-  const [errorMessage, setErrorMessage] = useState(null)
+  const [info, setInfo] = useState({message: null})
 
   const clearForm = () => {
     setNewName('');
     setNewNumber('');
   }
 
-  const updatePerson = (dupeId) => {
+  const notifyWith = (message, type='info') => {
+    setInfo({
+      message, type
+    })
+
+    setTimeout(() => {
+      setInfo({ message: null} )
+    }, 3000)
+  }
+
+  const updatePerson = (person) => {
     if (confirm(`${newName} is already added to the phonebook, replace the old number with a new one?`)) {
       personService
-        .update(dupeId, personObject)
-        .then(returnedPerson => {
-          console.log(returnedPerson);
-          setPersons(persons.map(person=> person.id !== dupeId ? person : returnedPerson));
-          // notify upon successful submission
-          setNotificationMessage(`${newName}'s info has been updated`);
-          setTimeout(() => {
-            setNotificationMessage(null)
-          }, 4000);
-          clearForm();
+        .update(person.id, {...person, number: newNumber})
+        .then(updatedPerson => {
+          setPersons(persons.map(p=> p.id !== person.id ? p : updatedPerson));
+          notifyWith(`phone number of ${person.name} updated!`)
         })
-        .catch(error=>{
-          setPersons(persons.filter(p=>p.id !== dupeId))
-          setErrorMessage(`Error: Information of ${newName} has already been removed from server. Try refreshing the page.`);
-          setTimeout(() => {
-            setErrorMessage(null)
-          }, 4000);
+        .catch(()=>{
+          setPersons(persons.filter(p=>p.id !== person.id))
+          notifyWith(`${person.name} has already been removed`, 'error')
         })
+      clearForm();
     }
   }
 
@@ -66,20 +64,15 @@ const App = () => {
     }
     let dupePerson = persons.find((person)=>person.name===newName);
     if (dupePerson){
-      updatePerson(dupePerson.id);
+      updatePerson(dupePerson);
       return;
     }
-
     // alter to modify our server data db.json
     personService
       .create(personObject)
-      .then(returnedPerson => {
-        setPersons(persons.concat(returnedPerson));
-        // notify upon successful submission
-        setNotificationMessage(`${newName}'s info has been added`);
-            setTimeout(() => {
-              setNotificationMessage(null)
-            }, 4000);
+      .then(createdPerson => {
+        setPersons(persons.concat(createdPerson));
+        notifyWith(`${createdPerson.name} added!`)
         clearForm();
       })
   }
@@ -128,8 +121,7 @@ const App = () => {
   return (
     <div>
       <h1>Phonebook</h1>
-      <Notification message={notificationMessage} />
-      <Error message={errorMessage} />
+      <Notification info={info} />
       <PersonForm submitPerson={submitPerson} newName={newName} newNumber={newNumber} handleNameChange={handleNameChange} handleNumberChange={handleNumberChange} />
       <Filter newFilter={newFilter} handleFilterChange={handleFilterChange} />
       <Directory newFilter={newFilter} getFiltered={getFiltered} getAllPersons={getAllPersons} />
