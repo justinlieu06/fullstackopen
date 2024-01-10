@@ -23,53 +23,50 @@ const App = () => {
   }
   useEffect(hook, []);
 
-  // const [persons, setPersons] = useState([
-  //   { name: 'Arto Hellas', number: '040-123456', id: 1 },
-  //   { name: 'Ada Lovelace', number: '39-44-5323523', id: 2 },
-  //   { name: 'Dan Abramov', number: '12-43-234345', id: 3 },
-  //   { name: 'Mary Poppendieck', number: '39-23-6423122', id: 4 }
-  // ]) 
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [newFilter, setNewFilter] = useState('')
   const [notificationMessage, setNotificationMessage] = useState(null)
   const [errorMessage, setErrorMessage] = useState(null)
 
+  const clearForm = () => {
+    setNewName('');
+    setNewNumber('');
+  }
+
+  const updatePerson = (dupeId) => {
+    if (confirm(`${newName} is already added to the phonebook, replace the old number with a new one?`)) {
+      personService
+        .update(dupeId, personObject)
+        .then(returnedPerson => {
+          console.log(returnedPerson);
+          setPersons(persons.map(person=> person.id !== dupeId ? person : returnedPerson));
+          // notify upon successful submission
+          setNotificationMessage(`${newName}'s info has been updated`);
+          setTimeout(() => {
+            setNotificationMessage(null)
+          }, 4000);
+          clearForm();
+        })
+        .catch(error=>{
+          setPersons(persons.filter(p=>p.id !== dupeId))
+          setErrorMessage(`Error: Information of ${newName} has already been removed from server. Try refreshing the page.`);
+          setTimeout(() => {
+            setErrorMessage(null)
+          }, 4000);
+        })
+    }
+  }
+
   const submitPerson = (event) => {
     event.preventDefault();
-
     const personObject = {
       name: newName,
       number: newNumber
     }
-    // should never be more than 1
-    let dupePersons = persons.filter((person)=>person.name===newName);
-    // prevent same name from being added
-    if (dupePersons.length){
-      let dupeId = dupePersons[0].id;
-      // alert(`${newName} is already added to phonebook`);
-      if (confirm(`${newName} is already added to the phonebook, replace the old number with a new one?`)) {
-        personService
-          .update(dupeId, personObject)
-          .then(returnedPerson => {
-            console.log(returnedPerson);
-            setPersons(persons.map(person=> person.id !== dupeId ? person : returnedPerson));
-            // notify upon successful submission
-            setNotificationMessage(`${newName}'s info has been updated`);
-            setTimeout(() => {
-              setNotificationMessage(null)
-            }, 4000);
-            // reset form input fields
-            setNewName('');
-            setNewNumber('');
-          })
-          .catch(error=>{
-            setErrorMessage(`Error: Information of ${newName} has already been removed from server. Try refreshing the page.`);
-            setTimeout(() => {
-              setErrorMessage(null)
-            }, 4000);
-          })
-      }
+    let dupePerson = persons.find((person)=>person.name===newName);
+    if (dupePerson){
+      updatePerson(dupePerson.id);
       return;
     }
 
@@ -83,9 +80,7 @@ const App = () => {
             setTimeout(() => {
               setNotificationMessage(null)
             }, 4000);
-        // reset form input fields
-        setNewName('');
-        setNewNumber('');
+        clearForm();
       })
   }
   
@@ -122,7 +117,6 @@ const App = () => {
     return matches.map(person => {
       return <Person key={person.name} name={person.name} number={person.number} personId={person.id} deletePerson={deletePerson} />
     })
-    // return <Person name="bob" number="123" />;
   }
 
   const getAllPersons = () => {
@@ -136,18 +130,8 @@ const App = () => {
       <h1>Phonebook</h1>
       <Notification message={notificationMessage} />
       <Error message={errorMessage} />
-
       <PersonForm submitPerson={submitPerson} newName={newName} newNumber={newNumber} handleNameChange={handleNameChange} handleNumberChange={handleNumberChange} />
-
       <Filter newFilter={newFilter} handleFilterChange={handleFilterChange} />
-
-      {/* <h2>Directory:</h2>
-      <ul>
-        {newFilter.length ? getFiltered() : persons.map(person => {
-          return <Person key={person.name} name={person.name} number={person.number} />
-        })}
-      </ul> */}
-
       <Directory newFilter={newFilter} getFiltered={getFiltered} getAllPersons={getAllPersons} />
     </div>
   )
